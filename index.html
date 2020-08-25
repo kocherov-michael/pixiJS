@@ -39,7 +39,7 @@
 
            function pixijs(index) {document.querySelector('body').addEventListener('mouseenter', () => {
                 // if (!isMoving) {
-                    animate(displacementFilter2.scale, 'x', .5, 1000)
+                    animate(displacementFilter2.scale, 'x', .5, 50)
                     animate(displacementFilter.scale, 'x', .5, 0)
                     animate(imgStart, 'alpha', .5, 0)
                     animate(imgStartOverlay, 'alpha', .5, 0)
@@ -50,7 +50,7 @@
             document.querySelector('body').addEventListener('mouseleave', () => {
                 
                 animate(displacementFilter2.scale, 'x', .5, 0)
-                animate(displacementFilter.scale, 'x', .5, -1000)
+                animate(displacementFilter.scale, 'x', .5, -50)
                 animate(imgStart, 'alpha', .5, 1)
                 animate(imgStartOverlay, 'alpha', .5, 1)
                 animate(imgEnd, 'alpha', .5, 0)
@@ -81,7 +81,7 @@
                     // transparent: true
                 //  });
                 const app = new PIXI.Application({
-                    width: 800, height: 600 , resolution: 1, transparent: true
+                    width: 100, height: 100 , resolution: 1, transparent: true
                     // width: 800, height: 600 , resolution: 1, backgroundColor: 0x000000
                 });
                 // document.querySelector('body').appendChild(renderer.view);
@@ -117,7 +117,7 @@
                 // console.log(displacementFilter.width)
                 displacementFilter.height = app.screen.height * 1.5
                 // искажение
-                displacementFilter.scale.x = -1000
+                displacementFilter.scale.x = -50
                 displacementFilter.scale.y = 0
                 displacementFilter.padding = 0;
                 
@@ -137,8 +137,8 @@
                 // const imgEnd = new PIXI.Sprite(gradTexture);
                 
                 const imgEnd = PIXI.Sprite.from('krit.jpg');
-                imgEnd.width = 800
-                imgEnd.height = 600
+                imgEnd.width = 100
+                imgEnd.height = 100
                 imgEnd.position.x = 0
                 imgEnd.position.y = 0
 
@@ -147,15 +147,15 @@
                 container.addChild(imgEnd);
 
                 // градиент
-                const gradTexture = createGradTexture(0,0,800,600);
+                const gradTexture = createGradTexture(0,0,100,100);
                 const imgStartOverlay = new PIXI.Sprite(gradTexture);
 
                 // цвет
                 // const singleColorStart = createSingleOverlay(800, 600, 'rgba(0, 100, 255, 0.5)')
                 // const imgStartOverlay = new PIXI.Sprite(singleColorStart);
 
-                imgStartOverlay.width = 800
-                imgStartOverlay.height = 600
+                imgStartOverlay.width = 100
+                imgStartOverlay.height = 100
                 imgStartOverlay.position.x = 0
                 imgStartOverlay.position.y = 0
 
@@ -165,9 +165,9 @@
 
 
                 const imgStart = PIXI.Sprite.from('valen.jpg');
-                imgStart.width = 1200
-                imgStart.height = 600
-                imgStart.position.x = -400
+                imgStart.width = 100
+                imgStart.height = 100
+                imgStart.position.x = 0
                 imgStart.position.y = 0
                 imgStart.alpha = 1;
 
