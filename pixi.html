@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixi</title>
+    <style>
+        .gradient {
+            width: 800px;
+            height: 600px;
+            background: linear-gradient(80deg, rgba(255, 0, 0, 1) 100%, rgba(0, 0, 255, 1));
+        }
+    </style>  
+</head>
+<body>
+    <!-- <div class="gradient">123</div> -->
+    
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.3.3/pixi.min.js" integrity="sha512-J7UHpLx39bpqtP+aWP6yIuXroFk0XPkDQaS9zDthM4TVeaXstWYh556gxsXwwIwpAPSoKqVHW+eqz3B93SpyKg==" crossorigin="anonymous"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+    <script>
+        // let isMoving = false
+        document.addEventListener("DOMContentLoaded", function() {
+            // for(let i = 0; i< 50; i++) {
+            //     pixijs(i)
+            //     console.log(i)
+            // }
+            let i = 0
+            start(i)
+            function start(i) {
+                if (i > 50) return
+                setTimeout(() => {
+                    i++
+                    console.log(i);
+                    pixijs(i)
+                    start(i)
+                },100)
+            }
+
+           function pixijs(index) {document.querySelector('body').addEventListener('mouseenter', () => {
+                // if (!isMoving) {
+                    animate(displacementFilter2.scale, 'x', .5, 1000)
+                    animate(displacementFilter.scale, 'x', .5, 0)
+                    animate(imgStart, 'alpha', .5, 0)
+                    animate(imgStartOverlay, 'alpha', .5, 0)
+                    animate(imgEnd, 'alpha', .5, 1)
+                    // isMoving = true
+                // }
+            })
+            document.querySelector('body').addEventListener('mouseleave', () => {
+                
+                animate(displacementFilter2.scale, 'x', .5, 0)
+                animate(displacementFilter.scale, 'x', .5, -1000)
+                animate(imgStart, 'alpha', .5, 1)
+                animate(imgStartOverlay, 'alpha', .5, 1)
+                animate(imgEnd, 'alpha', .5, 0)
+                // isMoving = false
+            })
+            // function
+           
+            
+                function onPointerMove() {
+                    console.log('move')
+                    if (!isMoving) {
+                        isMoving = true
+                        draw()
+                    }
+
+                }
+                function onPointerOut() {
+                    isMoving = false
+                }
+                // const renderer = new PIXI.autoDetectRenderer({
+                // const renderer = new PIXI.Application({
+                //     width: 800, height: 600, backgroundColor: 0x00ff00, resolution: window.devicePixelRatio || 1,
+                // });
+                // // добавление канваса на сцену
+                // document.body.appendChild(renderer.view);
+
+                // const renderer = PIXI.CanvasRenderer(800, 600, { 
+                    // transparent: true
+                //  });
+                const app = new PIXI.Application({
+                    width: 800, height: 600 , resolution: 1, transparent: true
+                    // width: 800, height: 600 , resolution: 1, backgroundColor: 0x000000
+                });
+                // document.querySelector('body').appendChild(renderer.view);
+                document.body.appendChild(app.view);
+                const number = document.createElement('div')
+                number.textContent = index
+                document.body.appendChild(number)
+                // app.stage.interactive = true;
+
+                // app.stage.interactive = true;
+
+                const container = new PIXI.Container();
+                const container2 = new PIXI.Container();
+                app.stage.addChild(container);
+                app.stage.addChild(container2);
+                
+                const displacementSprite = PIXI.Sprite.from('distort/10.jpg');
+                displacementSprite.width = app.screen.width
+                displacementSprite.height = app.screen.height
+                const displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
+
+                // app.stage.addChild(displacementSprite);
+
+                // const displacementSprite2 = PIXI.Sprite.from('filter.png');
+                const displacementFilter2 = new PIXI.filters.DisplacementFilter(displacementSprite);
+
+                // stage.addChild(displacementSprite);
+                app.stage.addChild(displacementSprite);
+
+                container.filters = [displacementFilter];
+                container2.filters = [displacementFilter2];
+                displacementFilter.width = app.screen.width * 1.5
+                // console.log(displacementFilter.width)
+                displacementFilter.height = app.screen.height * 1.5
+                // искажение
+                displacementFilter.scale.x = -1000
+                displacementFilter.scale.y = 0
+                displacementFilter.padding = 0;
+                
+                displacementFilter2.width = app.screen.width * 1.5
+                displacementFilter2.height = app.screen.height * 1.5
+                displacementFilter2.scale.y = 0
+                displacementFilter2.scale.x = 0.1
+                // искажение
+                displacementFilter2.alpha = 0
+
+                // заливка вместо картинки
+                // const singleColor1 = createSingleOverlay(800, 600, 'rgba(0, 100, 255, 0.1)')
+                // const imgEnd = new PIXI.Sprite(singleColor1);
+
+                // градиент
+                // const gradTexture = createGradTexture(800,600);
+                // const imgEnd = new PIXI.Sprite(gradTexture);
+                
+                const imgEnd = PIXI.Sprite.from('krit.jpg');
+                imgEnd.width = 800
+                imgEnd.height = 600
+                imgEnd.position.x = 0
+                imgEnd.position.y = 0
+
+                imgEnd.alpha = 0;
+
+                container.addChild(imgEnd);
+
+                // градиент
+                const gradTexture = createGradTexture(0,0,800,600);
+                const imgStartOverlay = new PIXI.Sprite(gradTexture);
+
+                // цвет
+                // const singleColorStart = createSingleOverlay(800, 600, 'rgba(0, 100, 255, 0.5)')
+                // const imgStartOverlay = new PIXI.Sprite(singleColorStart);
+
+                imgStartOverlay.width = 800
+                imgStartOverlay.height = 600
+                imgStartOverlay.position.x = 0
+                imgStartOverlay.position.y = 0
+
+                imgStartOverlay.alpha = 1;
+
+                
+
+
+                const imgStart = PIXI.Sprite.from('valen.jpg');
+                imgStart.width = 1200
+                imgStart.height = 600
+                imgStart.position.x = -400
+                imgStart.position.y = 0
+                imgStart.alpha = 1;
+
+                container2.addChild(imgStart);
+                container2.addChild(imgStartOverlay);
+
+                // app.stage.on('pointerover', () => onPointerMove()).on('pointerout', onPointerOut);
+
+                
+                const isMoving = new Set()
+                function animate(param, current, duration, finish) {
+                    // console.log(isMoving)
+                    // получаю знак числа + или -
+                    const sign = Math.sign(finish - param[current])
+                    // если разность = 0, то анимировать не надо
+                    if (!sign) return
+                    if (isMoving.has(param)) return
+                    isMoving.add(param)
+                    // console.log(current, duration, finish)
+                    const step = (finish - param[current]) / (duration * 60)
+                    // console.log(step);
+                    draw()
+                    function draw() {
+                        if ((param[current] * sign) <= (finish * sign)) {
+                            // console.log('до', param[current])
+
+                            param[current] += step
+                            // console.log('после', param[current])
+                            window.requestAnimationFrame(draw)
+                        } else {
+                            param[current] = finish
+                            isMoving.delete(param)
+                            return
+                        }
+                    }
+                }
+                function createSingleOverlay(width, height, color) {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = color;
+                    ctx.fillRect(0, 0, width, height);
+                    return PIXI.Texture.from(canvas);
+                }
+                function toRadians (angle) {
+                    return angle * (Math.PI / 180);
+                }
+                function toDegrees (angle) {
+                    return angle * (180 / Math.PI);
+                }
+
+                function createGradTexture(startx, starty, endx, endy, angleIn = 60, transition = 50) {
+                    // adjust it if somehow you need better quality for very very big images
+                    // const quality = 256;
+                    const alfa = toRadians(angleIn)
+                    const canvas = document.createElement('canvas');
+                    canvas.width = endx;
+                    canvas.height = endy
+                    // canvas.height = 600;
+                    const height = endy - starty; 
+                    // console.log('limitAngle', toDegrees(Math.atan2(endx,height)), ' currentAngle',angleIn);
+                    // console.log('sinLimitAngle', Math.sin(Math.atan2(endx,height)) ,' currentAngle', Math.sin(toRadians(angleIn)));
+                    const limitAngle = toDegrees(Math.atan2(endx,height))
+                    let radius
+                    if (Math.abs(Math.sin(alfa)) < Math.abs(Math.sin(Math.atan2(endx,height)))) {
+                        // radius = (endy / 2) / Math.cos(toRadians(angleIn))
+                        radius = Math.abs((endy / 2) / Math.cos(alfa))
+                        // console.log('1', radius);
+                        const b1 = Math.abs(Math.tan(alfa) * (endy / 2))
+                        // console.log('b1',b1);
+                        const b2 = (endx / 2) - b1
+                        // console.log('b2',b2);
+                        const c2 = Math.abs(b2 * Math.sin(alfa))
+                        // console.log('c2',c2);
+                        radius += c2
+                        // console.log('finalRadius', radius);
+                    } else {
+                        radius = Math.abs((endx / 2) / Math.sin(alfa))
+                        // console.log('2', radius);
+                        const a1 = Math.abs((endx / 2) / Math.tan(alfa))
+                        // console.log('a1',a1);
+                        const a2 = (endy / 2) - a1
+                        // console.log('a2',a2);
+                        const c1 = Math.abs(Math.cos(alfa)) * a2
+                        // console.log('c1',c1, ' Math.cos(toRadians(angleIn))',Math.cos(toRadians(angleIn)) );
+                        radius += c1
+                        // console.log('finalRadius', radius);
+                    }
+                    
+                    const angle = toRadians(angleIn) - Math.PI / 2;
+                    const gx = radius * Math.cos(angle);
+                    const gy = radius * Math.sin(angle);
+                    const cx = (startx + endx) / 2;
+                    const cy = (starty + endy) / 2;
+
+                    const ctx = canvas.getContext('2d');
+                    
+
+                    const grd = ctx.createLinearGradient(cx - gx, cy - gy, cx + gx, cy + gy);
+                    grd.addColorStop(0, 'rgba(255, 0, 0, 0.5)');
+                    grd.addColorStop(transition / 100, 'rgba(255, 0, 0, 0.5)');
+                    grd.addColorStop(1, 'rgba(0, 0, 255, 1)');
+
+                    ctx.fillStyle = grd;
+                    ctx.fillRect(0, 0, endx, endy);
+
+                    return PIXI.Texture.from(canvas);
+                }
+}
+            
+        });
+    </script>    
+
+
+</body>
+</html>
